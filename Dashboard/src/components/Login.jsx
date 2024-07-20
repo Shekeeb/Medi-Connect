@@ -16,7 +16,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http:localhost/4000/api/v1/user/login",
+      await axios.post("https://medi-connect-backend.onrender.com/api/v1/user/login",
         { email, password, confirmPassword, role: "Admin" },
         {
           withCredentials: true,

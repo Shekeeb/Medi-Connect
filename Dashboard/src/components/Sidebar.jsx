@@ -17,7 +17,7 @@ const Sidebar = () => {
   const { isAuthenticated, setIsAuthenticated } = useContext(Context);
 
   const handleLogout = async () => {
-    await axios.get("http:localhost/4000/api/v1/user/admin/logout", {
+    await axios.get("https://medi-connect-backend.onrender.com/api/v1/user/admin/logout", {
       withCredentials: true,
     })
       .then((res) => {
