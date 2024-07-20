@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import validator from "validator";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs"; 
 import jwt from "jsonwebtoken";
 
 const userSchema = new mongoose.Schema({
@@ -18,18 +18,21 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Email Is Required!"],
     validate: [validator.isEmail, "Provide A Valid Email!"],
+    unique: true, 
   },
   phone: {
     type: String,
     required: [true, "Phone Is Required!"],
     minLength: [10, "Phone Number Must Contain Exact 10 Digits!"],
     maxLength: [10, "Phone Number Must Contain Exact 10 Digits!"],
+    unique: true, 
   },
   nic: {
     type: String,
     required: [true, "NIC Is Required!"],
     minLength: [13, "NIC Must Contain Only 13 Digits!"],
     maxLength: [13, "NIC Must Contain Only 13 Digits!"],
+    unique: true,
   },
   dob: {
     type: Date,
@@ -51,7 +54,7 @@ const userSchema = new mongoose.Schema({
     required: [true, "User Role Required!"],
     enum: ["Patient", "Doctor", "Admin"],
   },
-  doctorDepartment:{
+  doctorDepartment: {
     type: String,
   },
   docAvatar: {
@@ -60,21 +63,39 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+
+userSchema.index({ email: 1 });
+userSchema.index({ phone: 1 });
+userSchema.index({ nic: 1 });
+
+
 userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) {
+  if (!this.isModified("password")) return next();
+  try {
+    this.password = await bcrypt.hash(this.password, 10); 
     next();
+  } catch (error) {
+    next(error);
   }
-  this.password = await bcrypt.hash(this.password, 10);
 });
 
+
 userSchema.methods.comparePassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
+  try {
+    return await bcrypt.compare(enteredPassword, this.password); 
+  } catch (error) {
+    throw new Error('Error comparing passwords');
+  }
 };
 
 userSchema.methods.generateJsonWebToken = function () {
-  return jwt.sign({ id: this._id }, process.env.JWT_SECRET_KEY, {
-    expiresIn: process.env.JWT_EXPIRES,
-  });
+  try {
+    return jwt.sign({ id: this._id }, process.env.JWT_SECRET_KEY, {
+      expiresIn: process.env.JWT_EXPIRES,
+    });
+  } catch (error) {
+    throw new Error('Error generating token');
+  }
 };
 
 export const User = mongoose.model("User", userSchema);
