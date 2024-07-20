@@ -12,7 +12,7 @@ const NavBar = () => {
     const navigateTo = useNavigate()
 
     const handleLogout = async () => {
-        await axios.get("http://localhost:4000/api/v1/user/patient/logout",
+        await axios.get("https://medi-connect-08yx.onrender.com/api/v1/user/patient/logout",
             {
                 withCredentials: true
             })
