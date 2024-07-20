@@ -22,7 +22,7 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      await axios.post("https://medi-connect-08yx.onrender.com/api/v1/user/patient/register",
+      await axios.post("http:localhost/4000/api/v1/user/patient/register",
         { firstName, lastName, email, phone, nic, dob, gender, password },
         {
           withCredentials: true,

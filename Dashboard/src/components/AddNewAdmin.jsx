@@ -21,7 +21,7 @@ const AddNewAdmin = () => {
   const handleAddNewAdmin = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("https://medi-connect-08yx.onrender.com/api/v1/user/admin/addnew",
+      await axios.post("http:localhost/4000/api/v1/user/admin/addnew",
           { firstName, lastName, email, phone, nic, dob, gender, password },
           {
             withCredentials: true,
